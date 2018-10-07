@@ -11,21 +11,34 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.udacity.gradle.builditbigger.MainActivity;
+import com.udacity.gradle.builditbigger.R;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import com.udafil.dhruvamsharma.androidjokelib.DisplayJokeActivity;
-import com.udafil.dhruvamsharma.javajokelib.MyClass;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-public class GetJokes extends AsyncTask<Context, Void, String> {
+public class GetJokes extends AsyncTask<Void, Void, String> {
 
     private static MyApi myApiService = null;
 
     private WeakReference<Context> contextWeakReference;
 
+    public GetJokes(Context context) {
+        contextWeakReference = new WeakReference<>(context);
+    }
+
     @Override
-    public String doInBackground(Context... pairs) {
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.startLoadingTag), contextWeakReference.get());
+
+    }
+
+    @Override
+    public String doInBackground(Void ... params) {
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -44,7 +57,6 @@ public class GetJokes extends AsyncTask<Context, Void, String> {
             myApiService = builder.build();
         }
 
-        contextWeakReference = new WeakReference<>( pairs[0]);
 
         try {
             return myApiService.getJoke().execute().getData();
@@ -55,6 +67,9 @@ public class GetJokes extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+
+        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.stopLoadingTag), contextWeakReference.get());
+
 
         Intent intent = new Intent(contextWeakReference.get(), DisplayJokeActivity.class);
         intent.putExtra(contextWeakReference.get().getPackageName(), result);

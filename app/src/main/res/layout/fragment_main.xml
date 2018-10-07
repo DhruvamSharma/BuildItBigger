@@ -16,11 +16,23 @@
         android:text="@string/instructions" />
 
     <Button
+        android:id="@+id/getJoke_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/instructions_text_view"
         android:onClick="tellJoke"
         android:text="@string/button_text" />
+    
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/jokeLoader_pb"
+        android:layout_above="@id/adView"
+        android:layout_below="@id/getJoke_btn"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

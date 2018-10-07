@@ -8,19 +8,22 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.udacity.gradle.builditbigger.network.GetJokes;
-import com.udafil.dhruvamsharma.androidjokelib.DisplayJokeActivity;
-import com.udafil.dhruvamsharma.javajokelib.MyClass;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private static ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mProgressBar = findViewById(R.id.jokeLoader_pb);
     }
 
 
@@ -53,12 +56,19 @@ public class MainActivity extends AppCompatActivity {
      */
     public void tellJoke(View view) {
 
-        new GetJokes().execute(this);
+        //getting jokes from the GCE
+        new GetJokes(this).execute();
+    }
 
-//        Intent intent = new Intent(this, DisplayJokeActivity.class);
-//        intent.putExtra(getPackageName(), MyClass.getJoke());
-//
-//        startActivity(intent);
+
+    public static void loadJokes(String task, Context context) {
+
+        if(task.equals(context.getResources().getString(R.string.startLoadingTag))) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else if(task.equals(context.getResources().getString(R.string.stopLoadingTag))){
+            mProgressBar.setVisibility(View.GONE);
+        }
+
     }
 
 
