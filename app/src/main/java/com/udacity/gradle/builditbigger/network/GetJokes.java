@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Pair;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -25,6 +27,8 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> contextWeakReference;
 
+    private WeakReference<ProgressBar> mProgressbar;
+
     public GetJokes(Context context) {
         contextWeakReference = new WeakReference<>(context);
     }
@@ -33,7 +37,8 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.startLoadingTag), contextWeakReference.get());
+        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.stopLoadingTag), contextWeakReference.get());
+
 
     }
 
@@ -61,7 +66,7 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
         try {
             return myApiService.getJoke().execute().getData();
         } catch (IOException e) {
-            return e.getMessage();
+            return null;
         }
     }
 
@@ -73,6 +78,7 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
 
         Intent intent = new Intent(contextWeakReference.get(), DisplayJokeActivity.class);
         intent.putExtra(contextWeakReference.get().getPackageName(), result);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
         contextWeakReference.get().startActivity(intent);
 
@@ -82,7 +88,11 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
     protected void onCancelled() {
         super.onCancelled();
 
-        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.stopLoadingTag), contextWeakReference.get());
+
 
     }
+
+
+
+
 }
