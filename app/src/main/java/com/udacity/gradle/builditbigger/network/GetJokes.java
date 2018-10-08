@@ -77,4 +77,12 @@ public class GetJokes extends AsyncTask<Void, Void, String> {
         contextWeakReference.get().startActivity(intent);
 
     }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+
+        MainActivity.loadJokes(contextWeakReference.get().getResources().getString(R.string.stopLoadingTag), contextWeakReference.get());
+
+    }
 }

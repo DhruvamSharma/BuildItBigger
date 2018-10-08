@@ -21,6 +21,13 @@ allprojects {
     }
 }
 
+task customTask{
+    dependsOn(":backend:appengineStart")
+    mustRunAfter(":backend:appengineStart")
+    dependsOn(":app:connectedAndroidTest")
+    finalizedBy(":backend:appengineStop")
+}
+
 
 
 
